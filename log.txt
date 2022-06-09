@@ -1,24 +1,3 @@
-URL: /
- Timestamp: Tue Jun 07 2022 16:19:01 GMT-0400 (Eastern Daylight Time)
-
-URL: /favicon.ico
- Timestamp: Tue Jun 07 2022 16:19:01 GMT-0400 (Eastern Daylight Time)
-
-URL: /documentation
- Timestamp: Tue Jun 07 2022 16:19:59 GMT-0400 (Eastern Daylight Time)
-
-URL: /favicon.ico
- Timestamp: Tue Jun 07 2022 16:20:00 GMT-0400 (Eastern Daylight Time)
-
-URL: /index
- Timestamp: Tue Jun 07 2022 16:20:06 GMT-0400 (Eastern Daylight Time)
-
-URL: /favicon.ico
- Timestamp: Tue Jun 07 2022 16:20:07 GMT-0400 (Eastern Daylight Time)
-
-URL: /ik
- Timestamp: Tue Jun 07 2022 16:20:10 GMT-0400 (Eastern Daylight Time)
-
-URL: /favicon.ico
- Timestamp: Tue Jun 07 2022 16:20:10 GMT-0400 (Eastern Daylight Time)
-
+::1 - - [09/Jun/2022:11:15:23 +0000] "GET / HTTP/1.1" 200 25 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.61 Safari/537.36"
+::1 - - [09/Jun/2022:11:15:35 +0000] "GET /movies HTTP/1.1" 200 611 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.61 Safari/537.36"
+::1 - - [09/Jun/2022:11:15:50 +0000] "GET /documentation.html HTTP/1.1" 200 590 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.61 Safari/537.36"
