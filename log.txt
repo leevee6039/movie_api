@@ -1,0 +1,3 @@
+127.0.0.1 - - [16/Jun/2022:02:42:53 +0000] "GET /documentation.html HTTP/1.1" 200 4699 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"
+127.0.0.1 - - [16/Jun/2022:02:42:53 +0000] "GET /index.js HTTP/1.1" 404 147 "http://localhost:8080/documentation.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"
+127.0.0.1 - - [16/Jun/2022:02:42:55 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:8080/documentation.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"
