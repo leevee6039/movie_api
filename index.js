@@ -12,11 +12,13 @@ const express = require('express'),
 
 const { check, validationResult } = require('express-validator');
 
+// DEV mode DB
 // mongoose.connect('mongodb://localhost:27017/myFlixDB', {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
 // });
 
+// PROD mode DB
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -34,6 +36,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
+
+// // To specify particular URI
 
 // let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 
@@ -132,7 +136,7 @@ app.post(
     check('Username', 'Username is required').isLength({ min: 5 }),
     check(
       'Username',
-      'Username contains non alphanumeric characters - not allowed'
+      'Username contains non alphanumeric characters - not allowed.'
     ).isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail(),
@@ -146,9 +150,10 @@ app.post(
     }
 
     let hashedPassword = Users.hashPassword(req.body.Password);
-    Users.findOne({ Username: req.body.Username })
+    Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
       .then((user) => {
         if (user) {
+          //If the user is found, send a response that it already exists
           return res.status(400).send(req.body.Username + ' already exists');
         } else {
           Users.create({
