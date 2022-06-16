@@ -50,8 +50,8 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-app.get('/', (req, res) => {
-  res.status(200).send('Welcome to MyFlix');
+app.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.status(200).send('Welcome to Lee Movies');
 });
 
 /**CRUD */
