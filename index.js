@@ -1,7 +1,7 @@
 const express = require('express'),
   app = express(),
   bodyParser = require('body-parser'),
-  uuid = require('uuid'),
+  // uuid = require('uuid'),
   morgan = require('morgan'),
   fs = require('fs'), // import built-in module
   mongoose = require('mongoose'),
@@ -55,7 +55,7 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-app.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).send('Welcome to Lee Movies');
 });
 
