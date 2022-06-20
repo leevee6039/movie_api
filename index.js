@@ -67,7 +67,7 @@ app.get('/', (req, res) => {
 // READ all movies
 app.get(
   '/movies',
-  passport.authenticate('jwt', { session: false }),
+  // passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Movies.find()
       .then((movies) => {
@@ -83,7 +83,7 @@ app.get(
 // READ a single movie by title
 app.get(
   '/movies/:Title',
-  // passport.authenticate('jwt', { session: false }),
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Movies.findOne({ Title: req.params.Title })
       .then((movie) => {
