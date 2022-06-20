@@ -12,22 +12,22 @@ const express = require('express'),
 
 const { check, validationResult } = require('express-validator');
 
-// DEV mode DB
+// // DEV mode DB
 // mongoose.connect('mongodb://localhost:27017/myFlixDB', {
 //   useNewUrlParser: true,
-//   useUnifiedTopology: true,
+//   useUnifiedTopology: true
 // });
 
 // PROD mode DB
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useUnifiedTopology: true
 });
 
 // create a write stream(in append mode)
 // 'a': Open file for appending. The file is created if it does not exist.
 const accessLogStream = fs.createWriteStream('log.txt', {
-  flag: 'a',
+  flag: 'a'
 });
 
 app.use(morgan('combined', { stream: accessLogStream }));
@@ -83,7 +83,7 @@ app.get(
 // READ a single movie by title
 app.get(
   '/movies/:Title',
-  passport.authenticate('jwt', { session: false }),
+  // passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Movies.findOne({ Title: req.params.Title })
       .then((movie) => {
@@ -133,13 +133,13 @@ app.post(
   '/users',
   // Validation logic here for post request
   [
-    check('Username', 'Username is required').isLength({ min: 5 }),
+    // check('Username', 'Username is required').isLength({ min: 5 }),
     check(
       'Username',
       'Username contains non alphanumeric characters - not allowed.'
     ).isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail(),
+    check('Email', 'Email does not appear to be valid').isEmail()
   ],
   (req, res) => {
     // check the validation object for errors
@@ -160,7 +160,7 @@ app.post(
             Username: req.body.Username,
             Password: hashedPassword,
             Email: req.body.Email,
-            Birthday: req.body.Birthday,
+            Birthday: req.body.Birthday
           })
             .then((user) => {
               res.status(201).json(user);
@@ -174,22 +174,6 @@ app.post(
       .catch((error) => {
         console.error(error);
         res.status(500).send('Error: ' + error);
-      });
-  }
-);
-
-// READ all users
-app.get(
-  '/users',
-  passport.authenticate('jwt', { session: false }),
-  (req, res) => {
-    Users.find()
-      .then((users) => {
-        res.status(201).json(users);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
       });
   }
 );
@@ -212,16 +196,16 @@ app.get(
 
 // UPDATE username of the user by username
 app.put(
-  // Validation logic here for post request
   '/users/:Username',
+  // Validation logic here for post request
   [
-    check('Username', 'Username is required').isLength({ min: 5 }),
+    // check('Username', 'Username is required').isLength({ min: 5 }),
     check(
       'Username',
       'Username contains non alphanumeric characters - not allowed'
-    ).isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail(),
+    ).isAlphanumeric()
+    // check('Password', 'Password is required').not().isEmpty(),
+    // check('Email', 'Email does not appear to be valid').isEmail()
   ],
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
@@ -232,17 +216,17 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    let hashedPassword = Users.hashPassword(req.body.Password);
+    // let hashedPassword = Users.hashPassword(req.body.Password);
 
     Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
         $set: {
-          Username: req.body.Username,
-          Password: hashedPassword,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
-        },
+          Username: req.body.Username
+          // Password: hashedPassword,
+          // Email: req.body.Email,
+          // Birthday: req.body.Birthday
+        }
       },
       //The third parameter you’ll see is { new: true }. This simply specifies that, in the proceeding callback, you want the document that was just updated to be returned.
       { new: true },
@@ -266,7 +250,7 @@ app.post(
     Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
-        $addToSet: { FavoriteMovies: req.params.MovieID },
+        $addToSet: { FavoriteMovies: req.params.MovieID }
       },
       { new: true },
       (err, updatedUser) => {
@@ -289,7 +273,7 @@ app.delete(
     Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
-        $pull: { FavoriteMovies: req.params.MovieID },
+        $pull: { FavoriteMovies: req.params.MovieID }
       },
       { new: true }
     )
