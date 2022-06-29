@@ -203,9 +203,9 @@ app.put(
     check(
       'Username',
       'Username contains non alphanumeric characters - not allowed'
-    ).isAlphanumeric()
-    // check('Password', 'Password is required').not().isEmpty(),
-    // check('Email', 'Email does not appear to be valid').isEmail()
+    ).isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
   ],
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
@@ -216,16 +216,16 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    // let hashedPassword = Users.hashPassword(req.body.Password);
+    let hashedPassword = Users.hashPassword(req.body.Password);
 
     Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
         $set: {
-          Username: req.body.Username
-          // Password: hashedPassword,
-          // Email: req.body.Email,
-          // Birthday: req.body.Birthday
+          Username: req.body.Username,
+          Password: hashedPassword,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday
         }
       },
       //The third parameter you’ll see is { new: true }. This simply specifies that, in the proceeding callback, you want the document that was just updated to be returned.
