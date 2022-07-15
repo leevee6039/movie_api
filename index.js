@@ -248,7 +248,7 @@ app.put(
 );
 
 // UPDATE favoriteMovies list by adding a movie to the user by username
-app.post(
+app.put(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
