@@ -249,7 +249,7 @@ app.put(
 );
 
 // UPDATE favoriteMovies list by adding a movie to the user by username
-app.post(
+app.put(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
@@ -258,16 +258,23 @@ app.post(
       {
         $addToSet: { FavoriteMovies: req.params.MovieID }
       },
-      { new: true },
-      (err, updatedUser) => {
-        if (err) {
-          console.error(err);
-          res.status(500).send('Error: ' + err);
-        } else {
-          res.json(updatedUser);
-        }
-      }
-    );
+      { new: true }
+      // (err, updatedUser) => {
+      //   if (err) {
+      //     console.error(err);
+      //     res.status(500).send('Error: ' + err);
+      //   } else {
+      //     res.json(updatedUser);
+      //   }
+      // }
+    )
+      .then((user) => {
+        res.status(200).json(user);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
   }
 );
 
