@@ -21,13 +21,13 @@ const { check, validationResult } = require('express-validator');
 // PROD mode DB
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 });
 
 // create a write stream(in append mode)
 // 'a': Open file for appending. The file is created if it does not exist.
 const accessLogStream = fs.createWriteStream('log.txt', {
-  flag: 'a'
+  flag: 'a',
 });
 
 app.use(morgan('combined', { stream: accessLogStream }));
@@ -145,7 +145,7 @@ app.post(
       'Username contains non alphanumeric characters - not allowed.'
     ).isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
+    check('Email', 'Email does not appear to be valid').isEmail(),
   ],
   (req, res) => {
     // check the validation object for errors
@@ -166,7 +166,7 @@ app.post(
             Username: req.body.Username,
             Password: hashedPassword,
             Email: req.body.Email,
-            Birthday: req.body.Birthday
+            Birthday: req.body.Birthday,
           })
             .then((user) => {
               res.status(201).json(user);
@@ -211,7 +211,7 @@ app.put(
       'Username contains non alphanumeric characters - not allowed'
     ).isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
+    check('Email', 'Email does not appear to be valid').isEmail(),
   ],
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
@@ -231,8 +231,8 @@ app.put(
           Username: req.body.Username,
           Password: hashedPassword,
           Email: req.body.Email,
-          Birthday: req.body.Birthday
-        }
+          Birthday: req.body.Birthday,
+        },
       },
       //The third parameter you’ll see is { new: true }. This simply specifies that, in the proceeding callback, you want the document that was just updated to be returned.
       { new: true },
@@ -256,7 +256,7 @@ app.put(
     Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
-        $addToSet: { FavoriteMovies: req.params.MovieID }
+        $addToSet: { FavoriteMovies: req.params.MovieID },
       },
       { new: true }
       // (err, updatedUser) => {
@@ -286,7 +286,7 @@ app.delete(
     Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
-        $pull: { FavoriteMovies: req.params.MovieID }
+        $pull: { FavoriteMovies: req.params.MovieID },
       },
       { new: true }
     )
@@ -311,6 +311,27 @@ app.delete(
           res.status(400).send(req.params.Username + ' was not found.');
         } else {
           res.status(200).send(req.params.Username + ' was deleted.');
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  }
+);
+
+// GET favorite movies list from a user
+app.get(
+  '/users/:Username/movies',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    Users.findOne({ Username: req.params.Username })
+      .then((user) => {
+        if (user) {
+          // If a user with the corresponding username was found, return user info
+          res.status(200).json(user.FavoriteMovies);
+        } else {
+          res.status(400).send('Could not find favorite movies for this user');
         }
       })
       .catch((err) => {
