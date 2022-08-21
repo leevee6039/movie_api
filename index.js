@@ -62,15 +62,27 @@ app.use(cors());
 // );
 
 let auth = require('./auth')(app);
+
+// Require passport module & import passport.js file
 const passport = require('passport');
 require('./passport');
 
+/**
+ * GET: Returns welcome message fro '/' request URL
+ * @returns Welcome message
+ */
 app.get('/', (req, res) => {
   res.status(200).send('Welcome to Lee Movies');
 });
 
 /**CRUD */
 // READ all movies
+/**
+ * GET: returns a list of ALL movies to the user
+ * Request body: Bearer Token
+ * @returns array of movie objects
+ * @ requires passport
+ */
 app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
@@ -87,6 +99,13 @@ app.get(
 );
 
 // READ a single movie by title
+/**
+ * GET: Returns data (description, genre, director, image URL, whether it's featured or not) about a single movie by title to the user
+ * REquest body: Bearer token
+ * @param Title (of movie)
+ * @returns movie object
+ * @requires passport
+ */
 app.get(
   '/movies/:Title',
   passport.authenticate('jwt', { session: false }),
@@ -103,6 +122,13 @@ app.get(
 );
 
 // READ genre description by genre name
+/**
+ * GET: Returns data about a genre (description) by name/title (e.g., "Fantasy")
+ * Request body: Bearer token
+ * @param Name (of genre)
+ * @returns genre object
+ * @requires passport
+ */
 app.get(
   '/movies/Genre/:Name',
   passport.authenticate('jwt', { session: false }),
@@ -119,6 +145,13 @@ app.get(
 );
 
 //READ about director by director name
+/**
+ * GET: Returns data about a director (bio, birth year) by name
+ * Request body: Bearer token
+ * @param Name (of director)
+ * @returns director object
+ * @requires passport
+ */
 app.get(
   '/movies/director/:Name',
   passport.authenticate('jwt', { session: false }),
@@ -135,6 +168,11 @@ app.get(
 );
 
 // CREATE a new user
+/**
+ * POST: Allow new users to register, Username password & Email are required fields!
+ * Request body: Bearer token, JSON with user information
+ * @returns user object
+ */
 app.post(
   '/users',
   // Validation logic here for post request
@@ -185,6 +223,13 @@ app.post(
 );
 
 // READ user by Username
+/**
+ * GET: Returns data on a single user (user object) by username
+ * Request body: Bearer token
+ * @param Username
+ * @returns user object
+ * @requires passport
+ */
 app.get(
   '/users/:Username',
   passport.authenticate('jwt', { session: false }),
@@ -201,6 +246,13 @@ app.get(
 );
 
 // UPDATE username of the user by username
+/**
+ * PUT: Allow users to update their user info (find by username)
+ * Request body: Bearer token, updated user info
+ * @param Username
+ * @returns user object with updates
+ * @requires passport
+ */
 app.put(
   '/users/:Username',
   // Validation logic here for post request
@@ -249,6 +301,14 @@ app.put(
 );
 
 // UPDATE favoriteMovies list by adding a movie to the user by username
+/**
+ * POST: Allows users to add a movie to their list of favorities
+ * Request body: Bearer token
+ * @param username
+ * @param movieId
+ * @returns user object
+ * @requires passport
+ */
 app.put(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
@@ -278,7 +338,43 @@ app.put(
   }
 );
 
+// GET favorite movies list from a user
+/**
+ * GET: Returns a list of favorite movies from the user
+ * Request body: Bearer token
+ * @param Username
+ * @returns array of favorite movies
+ * @requires passport
+ */
+app.get(
+  '/users/:Username/movies',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    Users.findOne({ Username: req.params.Username })
+      .then((user) => {
+        if (user) {
+          // If a user with the corresponding username was found, return user info
+          res.status(200).json(user.FavoriteMovies);
+        } else {
+          res.status(400).send('Could not find favorite movies for this user');
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  }
+);
+
 // DELETE a movie from user favoriteMovies list by username
+/**
+ * DELETE: Allows users to remove a movie from their list of favorites
+ * Request body: Bearer token
+ * @param Username
+ * @param movieId
+ * @returns user object
+ * @requires passport
+ */
 app.delete(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
@@ -301,6 +397,13 @@ app.delete(
 );
 
 // DELETE a user by username
+/**
+ * DELETE: Allows existing users to deregister
+ * Request body: Bearer token
+ * @param Username
+ * @returns success message
+ * @requires passport
+ */
 app.delete(
   '/users/:Username',
   passport.authenticate('jwt', { session: false }),
@@ -320,36 +423,24 @@ app.delete(
   }
 );
 
-// GET favorite movies list from a user
-app.get(
-  '/users/:Username/movies',
-  passport.authenticate('jwt', { session: false }),
-  (req, res) => {
-    Users.findOne({ Username: req.params.Username })
-      .then((user) => {
-        if (user) {
-          // If a user with the corresponding username was found, return user info
-          res.status(200).json(user.FavoriteMovies);
-        } else {
-          res.status(400).send('Could not find favorite movies for this user');
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-  }
-);
-
 // app.use('/static', express.static('public')); // http://localhost:8080/static/documentation.html
+/**
+ * Serves static content for the app from the 'public' directory
+ */
 app.use(express.static('public')); // http://localhost:8080/documentation.html
 
 // 'err' parameter allows you to receive information about whatever unexpected error brought you to the current handler
 //Information about the current error would be logged to the terminal using 'err.stack', which is a property of the error parameter for the middleware function.
+/**
+ * handles errors
+ */
 app.use((err, req, res, next) => {
   console.log(err.stack);
   res.status(500).send('Something Broke: ' + err.stack);
 });
 
+/**
+ * defines port, listening to port 8080
+ */
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => console.log('Listening on port ' + port));
